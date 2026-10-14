@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>SmartTimetable</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f3f8fe;
+            --s: #e9f1fb;
+            --w: #fff;
+            --pt: #fff;
+            --tx: #1b2733;
+            --mu: #5f7084;
+            --bd: #d6e4f4;
+            --ac: #2f6db5;
+            --ac2: #dce9f8;
+            --ok: #2f6b3f;
+            --er: #a63d3d;
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px)
+        }
+
+        @media(prefers-color-scheme:dark) {
+            :root:not([data-theme=light]) {
+                --bg: #141516;
+                --s: #1c1d1f;
+                --w: #1c1d1f;
+                --pt: #141516;
+                --tx: #ececea;
+                --mu: #9a9a94;
+                --bd: #2c2d30;
+                --ac: #8fb0dc;
+                --ac2: #1f2a3a;
+                --ok: #7bc08c;
+                --er: #e08a8a;
+                color-scheme: dark
+            }
+        }
+
+        :root[data-theme=dark] {
+            --bg: #141516;
+            --s: #1c1d1f;
+            --w: #1c1d1f;
+            --pt: #141516;
+            --tx: #ececea;
+            --mu: #9a9a94;
+            --bd: #2c2d30;
+            --ac: #8fb0dc;
+            --ac2: #1f2a3a;
+            --ok: #7bc08c;
+            --er: #e08a8a;
+            color-scheme: dark
+        }
+
+        html {
+            scroll-padding-top: env(safe-area-inset-top, 0px)
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--tx);
+            font: 14px/1.6 Inter, system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            width: 100%
+        }
+
+        em,
+        .it {
+            font-style: italic;
+            color: var(--mu)
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            background: var(--bg);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.05)
+        }
+
+        nav {
+            display: flex;
+            flex-direction: column;
+            width: 260px;
+            flex: none;
+            border-right: 1px solid var(--bd);
+            background: var(--s);
+            padding: 20px 14px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: auto
+        }
+
+        nav h1 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 8px 2px;
+            letter-spacing: -.01em
+        }
+
+        nav .it {
+            display: block;
+            margin: 0 8px 16px;
+            font-size: 12px
+        }
+
+        nav h6 {
+            margin: 16px 8px 4px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--mu)
+        }
+
+        .nf {
+            margin-top: auto;
+            position: sticky;
+            bottom: 0;
+            background: var(--s);
+            padding-top: 12px;
+            border-top: 1px solid var(--bd)
+        }
+
+        nav a {
+            display: block;
+            padding: 6px 10px;
+            border-radius: 6px;
+            color: var(--tx);
+            text-decoration: none;
+            font-size: 13px
+        }
+
+        nav a:hover {
+            background: var(--ac2)
+        }
+
+        nav a.on {
+            background: var(--ac2);
+            color: var(--ac);
+            font-weight: 500
+        }
+
+        main {
+            flex: 1;
+            min-width: 0;
+            padding: 36px 48px;
+            max-width: 1180px;
+            margin: 0 auto;
+            width: 100%
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -.02em;
+            margin: 0
+        }
+
+        .lead {
+            margin: 2px 0 24px;
+            font-style: italic;
+            color: var(--mu)
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px
+        }
+
+        .card {
+            background: var(--w);
+            border: 1px solid var(--bd);
+            border-radius: 8px;
+            padding: 14px 16px
+        }
+
+        .card b {
+            display: block;
+            font-size: 26px;
+            font-weight: 600
+        }
+
+        .card span {
+            font-style: italic;
+            color: var(--mu);
+            font-size: 12px
+        }
+
+        .wrap {
+            overflow-x: auto;
+            background: var(--w);
+            border: 1px solid var(--bd);
+            border-radius: 8px;
+            margin-bottom: 16px
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 13px
+        }
+
+        th,
+        td {
+            padding: 9px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--bd);
+            white-space: nowrap
+        }
+
+        th {
+            font-weight: 500;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--mu);
+            background: var(--s)
+        }
+
+        tr:last-child td {
+            border-bottom: 0
+        }
+
+        td.c {
+            font-style: italic;
+            color: var(--mu)
+        }
+
+        button,
+        select,
+        input,
+        textarea {
+            font: inherit;
+            color: var(--tx);
+            background: var(--w);
+            border: 1px solid var(--bd);
+            border-radius: 6px;
+            padding: 6px 10px
+        }
+
+        button {
+            cursor: pointer
+        }
+
+        button.p {
+            background: var(--ac);
+            color: var(--pt);
+            border-color: var(--ac)
+        }
+
+        button:hover {
+            opacity: .9;
+            border-color: var(--ac)
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid var(--ac2);
+            border-color: var(--ac)
+        }
+
+        button.x {
+            border: 0;
+            color: var(--er);
+            padding: 2px 6px
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            align-items: center
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            background: var(--ac2);
+            color: var(--ac)
+        }
+
+        .ok {
+            color: var(--ok)
+        }
+
+        .er {
+            color: var(--er)
+        }
+
+        .g td,
+        .g th {
+            text-align: center;
+            white-space: normal;
+            min-width: 96px;
+            vertical-align: top;
+            font-size: 12px
+        }
+
+        .g td b {
+            display: block;
+            font-weight: 500
+        }
+
+        .g td i {
+            color: var(--mu)
+        }
+
+        .g td.hit {
+            background: var(--ac2);
+            cursor: pointer
+        }
+
+        .slot {
+            cursor: pointer
+        }
+
+        .slot.off {
+            background: var(--s);
+            color: var(--mu)
+        }
+
+        .msg {
+            border-left: 2px solid var(--ac);
+            padding: 4px 12px;
+            margin: 0 0 8px;
+            font-size: 13px
+        }
+
+        .msg.bad {
+            border-color: var(--er)
+        }
+
+        /* Official Institutional Sheet Styles (College / University / Intermediate Standard) */
+        .official-sheet {
+            background: #fff;
+            color: #111827;
+            border: 2px solid #222;
+            padding: 18px 22px 24px;
+            margin: 16px 0 24px;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            font-family: Inter, Segoe UI, Arial, sans-serif;
+            overflow-x: auto
+        }
+
+        .sheet-header {
+            text-align: center;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px
+        }
+
+        .sheet-college-name {
+            font-size: 23px;
+            font-weight: 800;
+            color: #153a8a;
+            letter-spacing: -.01em;
+            margin: 0 0 4px;
+            font-style: italic
+        }
+
+        .sheet-dept-name {
+            font-size: 17.5px;
+            font-weight: 700;
+            color: #167338;
+            margin: 0 0 3px
+        }
+
+        .sheet-sem-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #222;
+            margin: 0;
+            letter-spacing: .05em
+        }
+
+        .sheet-meta-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1.5px solid #222;
+            font-size: 13px;
+            margin-bottom: 10px;
+            background: #fff
+        }
+
+        .sheet-meta-table td {
+            border: 1px solid #333;
+            padding: 6px 12px;
+            color: #111;
+            font-weight: 500;
+            white-space: normal
+        }
+
+        .sheet-meta-table .bld {
+            font-weight: 700;
+            color: #111
+        }
+
+        .sheet-meta-table .room-val {
+            color: #d32f2f;
+            font-weight: 800;
+            font-size: 15px;
+            margin-left: 6px
+        }
+
+        .sheet-grid-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #222;
+            font-size: 12.5px;
+            text-align: center;
+            margin-bottom: 16px;
+            background: #fff
+        }
+
+        .sheet-grid-table th,
+        .sheet-grid-table td {
+            border: 1px solid #333;
+            padding: 8px 5px;
+            vertical-align: middle;
+            white-space: normal
+        }
+
+        .sheet-grid-table th.time-th {
+            background: #c6efce;
+            color: #0f5132;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: .02em
+        }
+
+        .sheet-grid-table th.period-th {
+            background: #ffeb9c;
+            color: #78350f;
+            font-weight: 700;
+            font-size: 12.5px
+        }
+
+        .sheet-grid-table td.day-cell {
+            background: #c6efce;
+            color: #0f5132;
+            font-weight: 700;
+            font-size: 13px;
+            width: 95px;
+            text-align: center
+        }
+
+        .sheet-grid-table td.lunch-col {
+            background: #ffeb9c;
+            color: #78350f;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: .12em;
+            width: 80px;
+            text-align: center;
+            vertical-align: middle
+        }
+
+        .sheet-grid-table td.lab-cell {
+            background: #fff3cd;
+            font-weight: 700;
+            color: #222;
+            border: 1px solid #444
+        }
+
+        .sheet-grid-table td.theory-cell {
+            background: #fff;
+            font-weight: 600;
+            color: #111
+        }
+
+        .sheet-ref-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1.5px solid #222;
+            font-size: 12px;
+            background: #fff;
+            margin-top: 8px
+        }
+
+        .sheet-ref-table th {
+            border: 1px solid #444;
+            padding: 7px 10px;
+            background: #e5e7eb;
+            color: #111;
+            font-weight: 700;
+            text-align: left;
+            font-size: 11.5px;
+            text-transform: uppercase
+        }
+
+        .sheet-ref-table td {
+            border: 1px solid #444;
+            padding: 6px 10px;
+            color: #111;
+            white-space: normal
+        }
+
+        .sheet-ref-table td.center {
+            text-align: center
+        }
+
+        .sheet-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 28px;
+            padding: 12px 10px 4px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #111
+        }
+
+        .inst-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 14px
+        }
+
+        .inst-badge-btn {
+            border: 1px solid var(--bd);
+            background: var(--w);
+            color: var(--tx);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer
+        }
+
+        .inst-badge-btn.active {
+            background: var(--ac);
+            color: var(--pt);
+            border-color: var(--ac);
+            font-weight: 600
+        }
+
+        @media print {
+            body {
+                background: #fff !important;
+                color: #000 !important
+            }
+
+            nav,
+            .inst-toolbar,
+            .inst-badges,
+            button,
+            .row,
+            h2,
+            .lead,
+            .cards {
+                display: none !important
+            }
+
+            main {
+                padding: 0 !important;
+                max-width: none !important;
+                margin: 0 !important;
+                width: 100% !important
+            }
+
+            .app {
+                display: block !important;
+                box-shadow: none !important;
+                max-width: none !important;
+                margin: 0 !important
+            }
+
+            .official-sheet {
+                box-shadow: none !important;
+                border: 1.5px solid #000 !important;
+                margin: 0 !important;
+                padding: 8px !important
+            }
+
+            @page {
+                size: landscape;
+                margin: 8mm
+            }
+        }
+
+        @media(max-width:760px) {
+            .app {
+                display: block
+            }
+
+            nav {
+                width: auto;
+                height: auto;
+                position: static;
+                border: 0;
+                border-bottom: 1px solid var(--bd)
+            }
+
+            main {
+                padding: 24px 16px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <nav id="nav"></nav>
+        <main id="main"></main>
+    </div>
+    <script>
+        let D = ["Mon", "Tue", "Wed", "Thu", "Fri"], P = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00"];
+        const S = {
+            dept: [["CSE", "Computer Science"], ["ECE", "Electronics"], ["MTH", "Mathematics"]],
+            fac: [["F01", "Dr. A. Rao", "CSE", "16"], ["F02", "Prof. S. Iyer", "CSE", "16"], ["F03", "Dr. M. Khan", "ECE", "14"], ["F04", "Prof. L. Devi", "MTH", "14"]],
+            sub: [["CS201", "Data Structures", "CSE", "3", "Lecture"], ["CS202", "Database Systems", "CSE", "3", "Lecture"], ["CS251", "DS Laboratory", "CSE", "2", "Lab"], ["MA201", "Discrete Mathematics", "MTH", "3", "Lecture"], ["EC210", "Digital Electronics", "ECE", "2", "Lecture"]],
+            bat: [["CSE-2-A", "2025", "3", "A", "60"], ["CSE-2-B", "2025", "3", "B", "58"], ["ECE-2-A", "2025", "3", "A", "54"]],
+            room: [["R101", "Classroom", "70", "Projector"], ["R102", "Classroom", "60", "Projector"], ["L201", "Laboratory", "60", "Workstations"]],
+            slot: [["Period 1", "09:00", "10:00"], ["Period 2", "10:00", "11:00"], ["Period 3", "11:00", "12:00"], ["Period 4", "12:00", "13:00"], ["Lunch", "13:00", "14:00"], ["Period 5", "14:00", "15:00"], ["Period 6", "15:00", "16:00"]],
+            req: [["CSE-2-A", "CS201", "F01", "R101", 3], ["CSE-2-A", "CS202", "F02", "R101", 3], ["CSE-2-A", "MA201", "F04", "R101", 3], ["CSE-2-A", "CS251", "F02", "L201", 2], ["CSE-2-B", "CS201", "F01", "R102", 3], ["CSE-2-B", "CS202", "F02", "R102", 3], ["CSE-2-B", "MA201", "F04", "R102", 3], ["ECE-2-A", "EC210", "F03", "R101", 2], ["ECE-2-A", "MA201", "F04", "R101", 3]],
+            users: [["admin@college.edu", "Administrator", "admin", "Active"], ["a.rao@college.edu", "Dr. A. Rao", "faculty", "Active"], ["student01@college.edu", "Student 01", "student", "Active"]],
+            notes: [["Welcome to SmartTimetable.", "Today"]], audit: [["admin", "Seeded sample data", "system", "—"]],
+            tt: [], draft: true, status: "none", versions: [], unassigned: [], unav: {}
+        };
+        const CRUD = {
+            departments: ["Department Management", "Department code, name and administrative ownership.", "dept", ["Code", "Name"]],
+            faculty: ["Faculty Management", "Create, search, edit and deactivate faculty members.", "fac", ["Code", "Name", "Department", "Max weekly periods"]],
+            subjects: ["Subject Management", "Subjects with weekly lecture periods and practical or lab requirements.", "sub", ["Code", "Name", "Department", "Periods / week", "Type"]],
+            batches: ["Student Batch / Section", "Academic year, semester, section and student count.", "bat", ["Batch", "Year", "Semester", "Section", "Students"]],
+            rooms: ["Classrooms and Laboratories", "Room number, type, capacity, equipment and status.", "room", ["Room", "Type", "Capacity", "Equipment"]],
+            calendar: ["Academic Calendar and Time Slots", "Working days, period start and end times, breaks and special periods.", "slot", ["Slot", "Start", "End"]],
+            requirements: ["Teaching Requirements", "Connect each subject and batch to sessions, eligible faculty and room type.", "req", ["Batch", "Subject", "Faculty", "Room", "Sessions"]]
+        };
+        const ROLE = {
+            dean: { label: "Dean", home: "dashboard", pages: null, publish: 1, edit: ["departments", "faculty", "availability", "subjects", "batches", "rooms", "calendar", "requirements"] },
+            hod: { label: "Head of Department", home: "dashboard", pages: ["dashboard", "departments", "faculty", "availability", "subjects", "batches", "rooms", "calendar", "requirements", "generate", "results", "conflicts", "editor", "versions", "ftt", "stt", "rtt", "reports", "notifications"], edit: ["faculty", "availability", "subjects", "batches", "requirements"] },
+            faculty: { label: "Faculty", home: "ftt", pages: ["ftt", "stt", "rtt", "notifications"], edit: [] },
+            student: { label: "Student", home: "stt", pages: ["stt", "notifications"], edit: [] }
+        };
+        S.acct = [{ e: "dean@college.edu", p: "dean123", name: "Dr. R. Sharma", role: "dean", on: 1 }, { e: "hod.cse@college.edu", p: "hod123", name: "Prof. K. Menon", role: "hod", dept: "CSE", on: 1 }, { e: "hod.ece@college.edu", p: "hod123", name: "Prof. T. Nair", role: "hod", dept: "ECE", on: 1 }, { e: "a.rao@college.edu", p: "fac123", name: "Dr. A. Rao", role: "faculty", fac: "F01", on: 1 }, { e: "student01@college.edu", p: "stu123", name: "Student 01", role: "student", bat: "CSE-2-A", on: 1 }];
+        S.user = null;
+        const dp = () => S.user && S.user.role == "hod" ? S.user.dept : null, inScope = b => !dp() || b.split("-")[0] == dp(), can = k => !!S.user && ROLE[S.user.role].edit.includes(k),
+            allowed = id => id != "login" && (!ROLE[S.user.role].pages || ROLE[S.user.role].pages.includes(id)),
+            myFac = f => S.user.role == "faculty" ? f[0] == S.user.fac : (!dp() || f[2] == dp()), myBat = b => S.user.role == "student" ? b[0] == S.user.bat : inScope(b[0]),
+            vis = (key, r) => { const d = dp(); if (!d) return true; if (key == "dept") return r[0] == d; if (key == "fac" || key == "sub") return r[2] == d; if (key == "bat" || key == "req") return r[0].split("-")[0] == d; return true },
+            ttS = () => S.tt.filter(e => inScope(e.b)), unS = () => S.unassigned.filter(u => inScope(u[0].split(" ")[0]));
+        const WK = ["Mon", "Tue", "Wed", "Thu", "Fri"], WK6 = [...WK, "Sat"], P1 = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00"];
+        const INST = {
+            engg: {
+                name: "Engineering College", dom: "geethanjali.edu.in", top: "Principal", head: "Head of Department", tch: "Faculty", tchP: "Faculty", unit: "Branch", unitP: "Branches", batch: "Section", batchP: "Sections", term: "Semester", dur: 55, days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], per: ["09.00-09.55", "09.55-10.50", "10.50-11.45", "11.45-12.40", "01.30-02.25", "02.25-03.20"],
+                dept: [["CSE", "Computer Science & Engineering"], ["ECE", "Electronics & Communication Engineering"]],
+                fa: [["F01", "S Ramanjaneyulu", "CSE", "18"], ["F02", "P Chandra Shekar Reddy", "CSE", "18"], ["F03", "Prof V Anuradha", "CSE", "18"], ["F04", "G venkateswarlu", "CSE", "18"], ["F05", "K Naupal Reddy", "CSE", "18"], ["F06", "K Gayathri Sandhya", "CSE", "18"], ["F07", "T Rakesh Kumar", "CSE", "18"]],
+                su: [["25CS21001", "Advanced Data Structures (ADS)", "CSE", "4", "Lecture"], ["25CS21002", "Object Oriented Programming through java (OOPJ)", "CSE", "4", "Lecture"], ["25CS21003", "Data Base Management Systems (DBMS)", "CSE", "4", "Lecture"], ["25EC21002", "Digital Logic Design (DLD)", "CSE", "4", "Lecture"], ["25MS21002", "Business Economics and Financial Analysis (BEFA)", "CSE", "3", "Lecture"], ["25CS21L01", "Advanced Data Structures Lab (ADS Lab)", "CSE", "2", "Lab"], ["25CS21L02", "Object Oriented Programming through java Lab", "CSE", "2", "Lab"], ["25CS21L03", "Database Management Systems Lab (DBMS LAB)", "CSE", "2", "Lab"], ["25CS21SD1", "Data Visualization using Python (SDC-1)", "CSE", "2", "Lab"], ["25CE21VA1", "Environmental Science (ES)", "CSE", "1", "Lecture"]],
+                ba: [["II-B.Tech-I-Sem-J", "2026", "3", "J", "60"], ["II-B.Tech-I-Sem-A", "2026", "3", "A", "60"]],
+                ro: [["307", "Classroom", "70", "Projector"], ["LAB-401", "Laboratory", "65", "Computers"], ["LAB-402", "Laboratory", "65", "Computers"], ["LAB-305", "Laboratory", "65", "Computers"]],
+                rq: [["II-B.Tech-I-Sem-J", "25CS21001", "F01", "307", 4], ["II-B.Tech-I-Sem-J", "25CS21002", "F02", "307", 4], ["II-B.Tech-I-Sem-J", "25CS21003", "F03", "307", 4], ["II-B.Tech-I-Sem-J", "25EC21002", "F04", "307", 4], ["II-B.Tech-I-Sem-J", "25MS21002", "F05", "307", 3], ["II-B.Tech-I-Sem-J", "25CS21L01", "F01", "LAB-401", 2], ["II-B.Tech-I-Sem-J", "25CS21L02", "F02", "LAB-402", 2], ["II-B.Tech-I-Sem-J", "25CS21L03", "F03", "LAB-401", 2], ["II-B.Tech-I-Sem-J", "25CS21SD1", "F06", "LAB-305", 2], ["II-B.Tech-I-Sem-J", "25CE21VA1", "F07", "307", 1]],
+                officialData: {
+                    instName: "Geethanjali College of Engineering & Technology",
+                    deptTitle: "Department of Computer Science & Engineering",
+                    semTitle: "ODD Sem",
+                    yearSemSec: "II-B.Tech I-Semester J-Section",
+                    roomNo: "307",
+                    classTeacher: "K Gayathri Sandhya",
+                    ay: "2026-27",
+                    version: "02",
+                    wef: "05 -10 -2026",
+                    timeSlots: ["09.00-09.55", "09.55-10.50", "10.50-11.45", "11.45-12.40", "12.40-01.30", "01.30-02.25", "02.25-03.20"],
+                    periodLabels: ["1", "2", "3", "4", "LUNCH", "5", "6"],
+                    days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                    grid: [
+                        { day: "Monday", slots: [{ s: "OOPJ" }, { s: "ADS" }, { s: "ADS LAB", span: 2, lab: true }, { s: "Coding (401 & 402)", span: 2, lab: true }] },
+                        { day: "Tuesday", slots: [{ s: "DBMS LAB", span: 2, lab: true }, { s: "DLD" }, { s: "DBMS" }, { s: "ADS" }, { s: "OOPJ" }] },
+                        { day: "Wednesday", slots: [{ s: "ADS" }, { s: "BEFA" }, { s: "DVP LAB", span: 2, lab: true }, { s: "OOPJ" }, { s: "DBMS" }] },
+                        { day: "Thursday", slots: [{ s: "ADS" }, { s: "DLD" }, { s: "DBMS" }, { s: "BEFA" }, { s: "OOPJ" }, { s: "MENTORING" }] },
+                        { day: "Friday", slots: [{ s: "Coding (305 & 219)", span: 2, lab: true }, { s: "DBMS" }, { s: "DLD" }, { s: "Club Activities", span: 2, lab: true }] },
+                        { day: "Saturday", slots: [{ s: "ES" }, { s: "BEFA" }, { s: "OOPJ LAB", span: 2, lab: true }, { s: "DLD" }, { s: "LIB/SPORTS" }] }
+                    ],
+                    courseRef: [
+                        { sno: 1, sub: "Advanced Data Structures (ADS)", code: "25CS21001", fac: "S Ramanjaneyulu", periods: 4 },
+                        { sno: 2, sub: "Object Oriented Programming through java (OOPJ)", code: "25CS21002", fac: "P Chandra Shekar Reddy", periods: 4 },
+                        { sno: 3, sub: "Data Base Management Systems (DBMS)", code: "25CS21003", fac: "Prof V Anuradha", periods: 4 },
+                        { sno: 4, sub: "Digital Logic Design (DLD)", code: "25EC21002", fac: "G venkateswarlu", periods: 4 },
+                        { sno: 5, sub: "Business Economics and Financial Analysis (BEFA)", code: "25MS21002", fac: "K Naupal Reddy", periods: 3 },
+                        { sno: 6, sub: "Advanced Data Structures Lab (ADS Lab)", code: "25CS21L01", fac: "S Ramanjaneyulu", periods: 2 },
+                        { sno: 7, sub: "Object Oriented Programming through java Lab", code: "25CS21L02", fac: "P Chandra Shekar Reddy", periods: 2 },
+                        { sno: 8, sub: "Database Management Systems Lab (DBMS LAB)", code: "25CS21L03", fac: "Prof V Anuradha", periods: 2 },
+                        { sno: 9, sub: "Data Visualization using Python (SDC-1)", code: "25CS21SD1", fac: "K Gayathri Sandhya", periods: 2 },
+                        { sno: 10, sub: "Environmental Science (ES)", code: "25CE21VA1", fac: "T Rakesh Kumar", periods: 1 }
+                    ]
+                }
+            },
+            univ: {
+                name: "University", dom: "university.edu", top: "Dean", head: "Head of Department", tch: "Faculty", tchP: "Faculty", unit: "Department", unitP: "Departments", batch: "Batch", batchP: "Batches", term: "Semester", dur: 55, days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], per: ["09.00-09.55", "09.55-10.50", "10.50-11.45", "11.45-12.40", "01.30-02.25", "02.25-03.20"],
+                dept: [["CSE", "Computer Science & Engineering"], ["ECE", "Electronics & Communication"], ["MTH", "Mathematics & Computing"]],
+                fa: [["F01", "Dr. A. Rao", "CSE", "16"], ["F02", "Prof. S. Iyer", "CSE", "16"], ["F03", "Dr. M. Khan", "CSE", "14"], ["F04", "Prof. L. Devi", "CSE", "14"], ["F05", "Dr. K. Murthy", "CSE", "16"], ["F06", "Prof. N. Lakshmi", "CSE", "14"]],
+                su: [["24CS31001", "Operating Systems (OS)", "CSE", "4", "Lecture"], ["24CS31002", "Computer Networks (CN)", "CSE", "4", "Lecture"], ["24CS31003", "Design & Analysis of Algorithms (DAA)", "CSE", "4", "Lecture"], ["24CS31004", "Artificial Intelligence & ML (AI/ML)", "CSE", "4", "Lecture"], ["24CS31005", "Web Technologies (WT)", "CSE", "4", "Lecture"], ["24CS31006", "Software Engineering (SE)", "CSE", "3", "Lecture"], ["24CS31L01", "Computer Networks Lab (CN LAB)", "CSE", "2", "Lab"], ["24CS31L02", "Operating Systems Lab (OS LAB)", "CSE", "2", "Lab"], ["24CS31L03", "Web Technologies Lab (WT LAB)", "CSE", "2", "Lab"], ["24CS31L04", "Artificial Intelligence Lab (AI LAB)", "CSE", "2", "Lab"]],
+                ba: [["III-B.Tech-I-Sem-CSE-A", "2026", "5", "A", "60"], ["III-B.Tech-I-Sem-CSE-B", "2026", "5", "B", "58"]],
+                ro: [["204", "Classroom", "75", "Projector"], ["L301", "Laboratory", "65", "Workstations"], ["L302", "Laboratory", "65", "Workstations"]],
+                rq: [["III-B.Tech-I-Sem-CSE-A", "24CS31001", "F01", "204", 4], ["III-B.Tech-I-Sem-CSE-A", "24CS31002", "F02", "204", 4], ["III-B.Tech-I-Sem-CSE-A", "24CS31003", "F03", "204", 4], ["III-B.Tech-I-Sem-CSE-A", "24CS31004", "F04", "204", 4], ["III-B.Tech-I-Sem-CSE-A", "24CS31005", "F05", "204", 4], ["III-B.Tech-I-Sem-CSE-A", "24CS31L01", "F02", "L301", 2], ["III-B.Tech-I-Sem-CSE-A", "24CS31L02", "F01", "L302", 2], ["III-B.Tech-I-Sem-CSE-A", "24CS31L03", "F05", "L301", 2]],
+                officialData: {
+                    instName: "University College of Engineering & Technology (Autonomous)",
+                    deptTitle: "Department of Computer Science & Engineering",
+                    semTitle: "ODD Sem",
+                    yearSemSec: "III-B.Tech I-Semester CSE-A",
+                    roomNo: "204",
+                    classTeacher: "Dr. A. Rao",
+                    ay: "2026-27",
+                    version: "01",
+                    wef: "12 -08 -2026",
+                    timeSlots: ["09.00-09.55", "09.55-10.50", "10.50-11.45", "11.45-12.40", "12.40-01.30", "01.30-02.25", "02.25-03.20"],
+                    periodLabels: ["1", "2", "3", "4", "LUNCH", "5", "6"],
+                    days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                    grid: [
+                        { day: "Monday", slots: [{ s: "OS" }, { s: "CN" }, { s: "CN LAB", span: 2, lab: true }, { s: "DAA" }, { s: "AI/ML" }] },
+                        { day: "Tuesday", slots: [{ s: "OS LAB", span: 2, lab: true }, { s: "DAA" }, { s: "WT" }, { s: "CN" }, { s: "SE" }] },
+                        { day: "Wednesday", slots: [{ s: "AI/ML" }, { s: "WT" }, { s: "WT LAB", span: 2, lab: true }, { s: "OS" }, { s: "DAA" }] },
+                        { day: "Thursday", slots: [{ s: "CN" }, { s: "AI/ML" }, { s: "SE" }, { s: "OS" }, { s: "WT" }, { s: "SEMINAR" }] },
+                        { day: "Friday", slots: [{ s: "Project Work", span: 2, lab: true }, { s: "OS" }, { s: "CN" }, { s: "Technical Clubs", span: 2, lab: true }] },
+                        { day: "Saturday", slots: [{ s: "SE" }, { s: "DAA" }, { s: "AI/ML LAB", span: 2, lab: true }, { s: "WT" }, { s: "LIB/SPORTS" }] }
+                    ],
+                    courseRef: [
+                        { sno: 1, sub: "Operating Systems (OS)", code: "24CS31001", fac: "Dr. A. Rao", periods: 4 },
+                        { sno: 2, sub: "Computer Networks (CN)", code: "24CS31002", fac: "Prof. S. Iyer", periods: 4 },
+                        { sno: 3, sub: "Design & Analysis of Algorithms (DAA)", code: "24CS31003", fac: "Dr. M. Khan", periods: 4 },
+                        { sno: 4, sub: "Artificial Intelligence & ML (AI/ML)", code: "24CS31004", fac: "Prof. L. Devi", periods: 4 },
+                        { sno: 5, sub: "Web Technologies (WT)", code: "24CS31005", fac: "Dr. K. Murthy", periods: 4 },
+                        { sno: 6, sub: "Software Engineering (SE)", code: "24CS31006", fac: "Prof. N. Lakshmi", periods: 3 },
+                        { sno: 7, sub: "Computer Networks Lab (CN LAB)", code: "24CS31L01", fac: "Prof. S. Iyer", periods: 2 },
+                        { sno: 8, sub: "Operating Systems Lab (OS LAB)", code: "24CS31L02", fac: "Dr. A. Rao", periods: 2 },
+                        { sno: 9, sub: "Web Technologies Lab (WT LAB)", code: "24CS31L03", fac: "Dr. K. Murthy", periods: 2 },
+                        { sno: 10, sub: "Artificial Intelligence Lab (AI LAB)", code: "24CS31L04", fac: "Prof. L. Devi", periods: 2 }
+                    ]
+                }
+            },
+            deg: {
+                name: "Degree College", dom: "degree.edu.in", top: "Principal", head: "Head of Department", tch: "Lecturer", tchP: "Lecturers", unit: "Department", unitP: "Departments", batch: "Class", batchP: "Classes", term: "Year", dur: 55, days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], per: ["09.00-09.55", "09.55-10.50", "10.50-11.45", "11.45-12.40", "01.30-02.25", "02.25-03.20"],
+                dept: [["COM", "Commerce & Management"], ["SCI", "Science & IT"]],
+                fa: [["F01", "Mrs. A. Kumari", "COM", "16"], ["F02", "Mr. R. Babu", "COM", "16"], ["F03", "Dr. S. Prasad", "COM", "16"], ["F04", "Ms. D. Anitha", "COM", "16"]],
+                su: [["25CM201", "Advanced Financial Accounting (FA)", "COM", "4", "Lecture"], ["25CM202", "Business Regulatory Framework (BL)", "COM", "4", "Lecture"], ["25CM203", "Income Tax & Auditing (IT)", "COM", "4", "Lecture"], ["25CM204", "Business Economics & Finance (BE)", "COM", "4", "Lecture"], ["25CA201", "Computer Applications in Business (CA)", "COM", "4", "Lecture"], ["25CM21L", "Computerized Accounting / Tally Lab", "COM", "2", "Lab"], ["25CA21L", "E-Commerce & Web Applications Lab", "COM", "2", "Lab"], ["25CA22L", "Office Automation & Python Lab", "COM", "2", "Lab"], ["25SDC01", "Career & Communication Skills (Soft Skills)", "COM", "2", "Lab"], ["25EV201", "Environmental Studies (EVS)", "COM", "1", "Lecture"]],
+                ba: [["II-B.Com-CA-Sec-A", "2026", "2", "A", "60"], ["II-B.Sc-Computers-A", "2026", "2", "A", "50"]],
+                ro: [["105", "Classroom", "65", "Board"], ["LB-COM", "Laboratory", "50", "Computers"]],
+                rq: [["II-B.Com-CA-Sec-A", "25CM201", "F01", "105", 4], ["II-B.Com-CA-Sec-A", "25CM202", "F02", "105", 4], ["II-B.Com-CA-Sec-A", "25CM203", "F03", "105", 4], ["II-B.Com-CA-Sec-A", "25CA201", "F03", "105", 4], ["II-B.Com-CA-Sec-A", "25CM21L", "F02", "LB-COM", 2], ["II-B.Com-CA-Sec-A", "25CA21L", "F03", "LB-COM", 2]],
+                officialData: {
+                    instName: "Government Autonomous Degree College",
+                    deptTitle: "Department of Commerce & Computer Applications",
+                    semTitle: "ODD Sem",
+                    yearSemSec: "II-B.Com (Computer Applications) Section-A",
+                    roomNo: "105",
+                    classTeacher: "Mrs. A. Kumari",
+                    ay: "2026-27",
+                    version: "01",
+                    wef: "18 -08 -2026",
+                    timeSlots: ["09.00-09.55", "09.55-10.50", "10.50-11.45", "11.45-12.40", "12.40-01.30", "01.30-02.25", "02.25-03.20"],
+                    periodLabels: ["1", "2", "3", "4", "LUNCH", "5", "6"],
+                    days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                    grid: [
+                        { day: "Monday", slots: [{ s: "FA" }, { s: "BL" }, { s: "Tally Lab", span: 2, lab: true }, { s: "CA" }, { s: "BE" }] },
+                        { day: "Tuesday", slots: [{ s: "E-Com Lab", span: 2, lab: true }, { s: "IT" }, { s: "FA" }, { s: "BL" }, { s: "CA" }] },
+                        { day: "Wednesday", slots: [{ s: "BE" }, { s: "IT" }, { s: "Web Lab", span: 2, lab: true }, { s: "FA" }, { s: "BL" }] },
+                        { day: "Thursday", slots: [{ s: "CA" }, { s: "FA" }, { s: "BL" }, { s: "BE" }, { s: "IT" }, { s: "MENTORING" }] },
+                        { day: "Friday", slots: [{ s: "Soft Skills", span: 2, lab: true }, { s: "IT" }, { s: "CA" }, { s: "Commerce Forum", span: 2, lab: true }] },
+                        { day: "Saturday", slots: [{ s: "EVS" }, { s: "BE" }, { s: "Comp Lab", span: 2, lab: true }, { s: "IT" }, { s: "SPORTS" }] }
+                    ],
+                    courseRef: [
+                        { sno: 1, sub: "Advanced Financial Accounting (FA)", code: "25CM201", fac: "Mrs. A. Kumari", periods: 4 },
+                        { sno: 2, sub: "Business Regulatory Framework (BL)", code: "25CM202", fac: "Mr. R. Babu", periods: 4 },
+                        { sno: 3, sub: "Income Tax & Auditing (IT)", code: "25CM203", fac: "Dr. S. Prasad", periods: 4 },
+                        { sno: 4, sub: "Business Economics & Finance (BE)", code: "25CM204", fac: "Ms. D. Anitha", periods: 4 },
+                        { sno: 5, sub: "Computer Applications in Business (CA)", code: "25CA201", fac: "Dr. S. Prasad", periods: 4 },
+                        { sno: 6, sub: "Computerized Accounting / Tally ERP Lab", code: "25CM21L", fac: "Mr. R. Babu", periods: 2 },
+                        { sno: 7, sub: "E-Commerce & Web Applications Lab", code: "25CA21L", fac: "Dr. S. Prasad", periods: 2 },
+                        { sno: 8, sub: "Office Automation & Python Lab", code: "25CA22L", fac: "Ms. D. Anitha", periods: 2 },
+                        { sno: 9, sub: "Communication & Career Skills (Soft Skills)", code: "25SDC01", fac: "Mrs. A. Kumari", periods: 2 },
+                        { sno: 10, sub: "Environmental Studies (EVS)", code: "25EV201", fac: "Guest Faculty", periods: 1 }
+                    ]
+                }
+            },
+            inter: {
+                name: "Intermediate College", dom: "inter.edu.in", top: "Principal", head: "Stream Head", tch: "Lecturer", tchP: "Lecturers", unit: "Stream", unitP: "Streams", batch: "Section", batchP: "Sections", term: "Year", dur: 55, days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], per: ["09.00-09.55", "09.55-10.50", "10.50-11.45", "11.45-12.40", "01.30-02.25", "02.25-03.20"],
+                dept: [["MPC", "Maths, Physics, Chemistry"], ["BPC", "Biology, Physics, Chemistry"]],
+                fa: [["F01", "Mr. A. Naidu", "MPC", "24"], ["F02", "Ms. K. Sudha", "MPC", "24"], ["F03", "Mr. C. Raju", "MPC", "24"], ["F04", "Dr. B. Rani", "MPC", "24"], ["F05", "Mrs. L. Fernandes", "MPC", "20"]],
+                su: [["MP201", "Mathematics 2A (Algebra & Probability)", "MPC", "5", "Lecture"], ["MP202", "Mathematics 2B (Calculus & Geometry)", "MPC", "5", "Lecture"], ["PH201", "Senior Physics (Theory)", "MPC", "4", "Lecture"], ["CH201", "Senior Chemistry (Theory)", "MPC", "4", "Lecture"], ["PH251", "Physics Practicals Lab (PHY LAB)", "MPC", "2", "Lab"], ["CH251", "Chemistry Practicals Lab (CHE LAB)", "MPC", "2", "Lab"], ["JEE201", "Advanced JEE Problem Practice", "MPC", "2", "Lecture"], ["EN201", "General English", "MPC", "2", "Lecture"], ["SL201", "Second Language (Sanskrit / Telugu)", "MPC", "2", "Lecture"], ["SH201", "Guided Study Hour & Doubts Session", "MPC", "2", "Lecture"]],
+                ba: [["Senior-Inter-MPC-1", "2026", "2", "1", "65"], ["Senior-Inter-MPC-2", "2026", "2", "2", "60"]],
+                ro: [["201", "Classroom", "75", "Board"], ["PHY-LAB", "Laboratory", "60", "Apparatus"], ["CHE-LAB", "Laboratory", "60", "Chemicals"]],
+                rq: [["Senior-Inter-MPC-1", "MP201", "F01", "201", 5], ["Senior-Inter-MPC-1", "MP202", "F02", "201", 5], ["Senior-Inter-MPC-1", "PH201", "F03", "201", 4], ["Senior-Inter-MPC-1", "CH201", "F04", "201", 4], ["Senior-Inter-MPC-1", "PH251", "F03", "PHY-LAB", 2], ["Senior-Inter-MPC-1", "CH251", "F04", "CHE-LAB", 2]],
+                officialData: {
+                    instName: "Sri Chaitanya / Narayana Junior College (Intermediate)",
+                    deptTitle: "Board of Intermediate Education - MPC Stream",
+                    semTitle: "Academic Year 2026-27 (Senior Inter)",
+                    yearSemSec: "Senior Intermediate (MPC-1 Batch)",
+                    roomNo: "201",
+                    classTeacher: "Mr. A. Naidu",
+                    ay: "2026-27",
+                    version: "02",
+                    wef: "01 -06 -2026",
+                    timeSlots: ["09.00-09.55", "09.55-10.50", "10.50-11.45", "11.45-12.40", "12.40-01.30", "01.30-02.25", "02.25-03.20"],
+                    periodLabels: ["1", "2", "3", "4", "LUNCH", "5", "6"],
+                    days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                    grid: [
+                        { day: "Monday", slots: [{ s: "MATHS-2A" }, { s: "PHY" }, { s: "PHY LAB", span: 2, lab: true }, { s: "MATHS-2B" }, { s: "CHE" }] },
+                        { day: "Tuesday", slots: [{ s: "CHE LAB", span: 2, lab: true }, { s: "MATHS-2A" }, { s: "CHE" }, { s: "PHY" }, { s: "MATHS-2B" }] },
+                        { day: "Wednesday", slots: [{ s: "MATHS-2B" }, { s: "MATHS-2A" }, { s: "JEE PROBLEM PRACTICE", span: 2, lab: true }, { s: "PHY" }, { s: "CHE" }] },
+                        { day: "Thursday", slots: [{ s: "PHY" }, { s: "CHE" }, { s: "MATHS-2A" }, { s: "MATHS-2B" }, { s: "ENGLISH" }, { s: "SANSKRIT" }] },
+                        { day: "Friday", slots: [{ s: "WEEKLY TEST", span: 2, lab: true }, { s: "CHE" }, { s: "PHY" }, { s: "STUDY HOUR", span: 2, lab: true }] },
+                        { day: "Saturday", slots: [{ s: "MATHS-2A" }, { s: "MATHS-2B" }, { s: "REVISION LAB", span: 2, lab: true }, { s: "PHY" }, { s: "SPORTS/COUNSEL" }] }
+                    ],
+                    courseRef: [
+                        { sno: 1, sub: "Mathematics 2A (Algebra & Probability)", code: "MP201", fac: "Mr. A. Naidu", periods: 5 },
+                        { sno: 2, sub: "Mathematics 2B (Calculus & Geometry)", code: "MP202", fac: "Ms. K. Sudha", periods: 5 },
+                        { sno: 3, sub: "Senior Physics (Theory)", code: "PH201", fac: "Mr. C. Raju", periods: 4 },
+                        { sno: 4, sub: "Senior Chemistry (Theory)", code: "CH201", fac: "Dr. B. Rani", periods: 4 },
+                        { sno: 5, sub: "Physics Practicals Lab (PHY LAB)", code: "PH251", fac: "Mr. C. Raju", periods: 2 },
+                        { sno: 6, sub: "Chemistry Practicals Lab (CHE LAB)", code: "CH251", fac: "Dr. B. Rani", periods: 2 },
+                        { sno: 7, sub: "Advanced JEE Problem Practice", code: "JEE201", fac: "Senior Faculty Team", periods: 2 },
+                        { sno: 8, sub: "General English", code: "EN201", fac: "Mrs. L. Fernandes", periods: 2 },
+                        { sno: 9, sub: "Second Language (Sanskrit / Telugu)", code: "SL201", fac: "Guest Lecturer", periods: 2 },
+                        { sno: 10, sub: "Guided Study Hour & Doubts Session", code: "SH201", fac: "Batch Mentors", periods: 2 }
+                    ]
+                }
+            },
+            school: {
+                name: "School", dom: "school.edu", top: "Headmaster", head: "Wing Coordinator", tch: "Teacher", tchP: "Teachers", unit: "Wing", unitP: "Wings", batch: "Class", batchP: "Classes", term: "Term", dur: 45, days: WK6, per: ["08.30-09.15", "09.15-10.00", "10.00-10.45", "10.45-11.45", "11.45-12.30", "12.30-01.15"],
+                dept: [["PRI", "Primary (Classes 1 to 5)"], ["SEC", "Secondary (Classes 6 to 10)"]],
+                fa: [["T01", "Mrs. L. Fernandes", "PRI", "30"], ["T02", "Mr. D. Joseph", "PRI", "30"], ["T03", "Mrs. S. Gupta", "SEC", "30"], ["T04", "Mr. H. Ali", "SEC", "30"]],
+                su: [["EN1", "English", "PRI", "5", "Lecture"], ["MA1", "Mathematics", "PRI", "5", "Lecture"], ["PE1", "Physical Education", "PRI", "2", "Lecture"], ["EN6", "English", "SEC", "5", "Lecture"], ["MA6", "Mathematics", "SEC", "5", "Lecture"], ["SC6", "Science", "SEC", "4", "Lecture"], ["SL6", "Science Practicals", "SEC", "2", "Lab"]],
+                ba: [["SEC-8-A", "2026", "1", "A", "40"], ["PRI-4-A", "2026", "1", "A", "35"]],
+                ro: [["C8A", "Classroom", "45", "Board"], ["C4A", "Classroom", "40", "Board"], ["SLAB", "Laboratory", "45", "Science lab"], ["GRD", "Ground", "80", "Playground"]],
+                rq: [["SEC-8-A", "EN6", "T03", "C8A", 5], ["SEC-8-A", "MA6", "T04", "C8A", 5], ["SEC-8-A", "SC6", "T03", "C8A", 4], ["SEC-8-A", "SL6", "T04", "SLAB", 2], ["PRI-4-A", "EN1", "T01", "C4A", 5], ["PRI-4-A", "MA1", "T02", "C4A", 5], ["PRI-4-A", "PE1", "T01", "GRD", 2]],
+                officialData: {
+                    instName: "Model Senior Secondary School (CBSE / State Board)",
+                    deptTitle: "High School Academic Division (Secondary Education)",
+                    semTitle: "Academic Year 2026-27 (Annual Term)",
+                    yearSemSec: "Class X - Section A",
+                    roomNo: "C8A",
+                    classTeacher: "Mrs. S. Gupta",
+                    ay: "2026-27",
+                    version: "01",
+                    wef: "12 -06 -2026",
+                    timeSlots: ["08.30-09.15", "09.15-10.00", "10.00-10.45", "10.45-11.45", "11.45-12.30", "12.30-01.15", "01.15-02.00"],
+                    periodLabels: ["1", "2", "3", "4", "LUNCH", "5", "6"],
+                    days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                    grid: [
+                        { day: "Monday", slots: [{ s: "EN6" }, { s: "MA6" }, { s: "SL6 LAB", span: 2, lab: true }, { s: "SC6" }, { s: "PE1" }] },
+                        { day: "Tuesday", slots: [{ s: "SC6 LAB", span: 2, lab: true }, { s: "MA6" }, { s: "EN6" }, { s: "SC6" }, { s: "MA6" }] },
+                        { day: "Wednesday", slots: [{ s: "MA6" }, { s: "EN6" }, { s: "COMP LAB", span: 2, lab: true }, { s: "SC6" }, { s: "MA6" }] },
+                        { day: "Thursday", slots: [{ s: "EN6" }, { s: "SC6" }, { s: "MA6" }, { s: "EN6" }, { s: "PE1" }, { s: "LIBRARY" }] },
+                        { day: "Friday", slots: [{ s: "SPORTS", span: 2, lab: true }, { s: "SC6" }, { s: "EN6" }, { s: "ACTIVITY", span: 2, lab: true }] },
+                        { day: "Saturday", slots: [{ s: "MA6" }, { s: "EN6" }, { s: "SCIENCE LAB", span: 2, lab: true }, { s: "SC6" }, { s: "CLUB" }] }
+                    ],
+                    courseRef: [
+                        { sno: 1, sub: "English (Language & Literature)", code: "EN6", fac: "Mrs. S. Gupta", periods: 5 },
+                        { sno: 2, sub: "Mathematics (Algebra & Geometry)", code: "MA6", fac: "Mr. H. Ali", periods: 5 },
+                        { sno: 3, sub: "General Science (Physics & Chemistry)", code: "SC6", fac: "Mrs. S. Gupta", periods: 4 },
+                        { sno: 4, sub: "Science Practicals & Experiment Lab", code: "SL6", fac: "Mr. H. Ali", periods: 2 },
+                        { sno: 5, sub: "Physical Education & Sports", code: "PE1", fac: "Mr. D. Joseph", periods: 2 }
+                    ]
+                }
+            }
+        };
+
+        function renderOfficialSheet(instId, batchCode) {
+            const instKey = instId || S.inst || "engg";
+            const I = INST[instKey] || INST.engg;
+            const data = I.officialData;
+            if (!data) return `<p class="er">Official timetable template not found.</p>`;
+
+            let html = `<div class="official-sheet" id="print-sheet">
+    <div class="sheet-header">
+      <div class="sheet-college-name">${data.instName}</div>
+      <div class="sheet-dept-name">${data.deptTitle}</div>
+      <div class="sheet-sem-title">${data.semTitle}</div>
+    </div>
+    
+    <table class="sheet-meta-table">
+      <tr>
+        <td style="width:70%"><span class="bld">Year/Sem/Sec:</span> ${batchCode || data.yearSemSec}</td>
+        <td style="width:30%"><span class="bld">Room No:</span> <span class="room-val">${data.roomNo}</span></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12.5px">
+            <span><span class="bld">Class Teacher :</span> ${data.classTeacher}</span>
+            <span><span class="bld">A.Y.:</span> ${data.ay}</span>
+            <span><span class="bld">Version :</span> ${data.version}</span>
+            <span><span class="bld">W.E.F.</span> ${data.wef}</span>
+          </div>
+        </td>
+      </tr>
+    </table>
+    
+    <table class="sheet-grid-table">
+      <thead>
+        <tr>
+          <th class="time-th" style="width:85px">Time</th>
+          ${data.timeSlots.map(t => `<th class="time-th">${t}</th>`).join("")}
+        </tr>
+        <tr>
+          <th class="period-th">Period</th>
+          ${data.periodLabels.map(p => `<th class="period-th">${p}</th>`).join("")}
+        </tr>
+      </thead>
+      <tbody>`;
+
+            data.grid.forEach((row, rowIdx) => {
+                html += `<tr>`;
+                html += `<td class="day-cell">${row.day}</td>`;
+
+                let renderedSlots = 0;
+                row.slots.forEach(slot => {
+                    if (renderedSlots === 4 && rowIdx === 0) {
+                        html += `<td rowspan="${data.days.length}" class="lunch-col">LUNCH</td>`;
+                    }
+                    const span = slot.span || 1;
+                    const isLab = slot.lab;
+                    html += `<td colspan="${span}" class="${isLab ? 'lab-cell' : 'theory-cell'}">${slot.s}</td>`;
+                    renderedSlots += span;
+                });
+
+                html += `</tr>`;
+            });
+
+            html += `</tbody></table>`;
+
+            html += `<table class="sheet-ref-table">
+    <thead>
+      <tr>
+        <th style="width:48px;text-align:center">S.No</th>
+        <th>Subject(T/P)</th>
+        <th style="width:130px;text-align:center">Course Code</th>
+        <th style="width:230px">Faculty Name</th>
+        <th style="width:110px;text-align:center">No.of Periods</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+            data.courseRef.forEach(c => {
+                html += `<tr>
+      <td class="center">${c.sno}</td>
+      <td><strong>${c.sub}</strong></td>
+      <td class="center">${c.code}</td>
+      <td>${c.fac}</td>
+      <td class="center"><strong>${c.periods}</strong></td>
+    </tr>`;
+            });
+
+            html += `</tbody></table>`;
+
+            html += `<div class="sheet-footer">
+    <div>Class Teacher / Incharge</div>
+    <div>Time Table Coordinator</div>
+    <div>Head of the Department (HOD)</div>
+    <div>Principal / Dean</div>
+  </div>`;
+
+            html += `</div>`;
+            return html;
+        }
+
+        function loadInst(id) {
+            const I = INST[id] || INST.engg, cp = x => JSON.parse(JSON.stringify(x)), dm = I.dom, [d1, d2] = (I.dept && I.dept.length > 1) ? I.dept.map(x => x[0]) : [I.dept[0][0], I.dept[0][0]];
+            S.inst = id; D = I.days; P = I.per;
+            S.dept = cp(I.dept); S.fac = cp(I.fa); S.sub = cp(I.su); S.bat = cp(I.ba); S.room = cp(I.ro); S.req = cp(I.rq);
+            S.slot = P.map((t, i) => {
+                if (t.includes("-")) {
+                    const parts = t.split("-").map(s => s.trim());
+                    return ["Period " + (i + 1), parts[0], parts[1]];
+                } else {
+                    const [h, m] = t.split(":").map(Number), e = h * 60 + m + I.dur, z = n => String(n).padStart(2, "0");
+                    return ["Period " + (i + 1), t, z(Math.floor(e / 60)) + ":" + z(e % 60)];
+                }
+            });
+
+            const initialTT = [];
+            if (I.officialData && I.officialData.grid) {
+                I.ba.forEach((bArr) => {
+                    const bName = bArr[0];
+                    I.officialData.grid.forEach((dayRow, dIdx) => {
+                        let pIdx = 0;
+                        dayRow.slots.forEach(slot => {
+                            const span = slot.span || 1;
+                            const subCode = slot.s;
+                            const matchedCourse = I.officialData.courseRef.find(c => subCode.includes(c.code) || c.sub.includes(subCode) || (subCode.length > 2 && c.code.toLowerCase().includes(subCode.toLowerCase())));
+                            const facName = (matchedCourse || {}).fac || I.fa[0][1];
+                            const facObj = I.fa.find(f => f[1] === facName || facName.includes(f[1]) || f[1].includes(facName)) || I.fa[0];
+                            const facId = facObj ? facObj[0] : "F01";
+                            const subObj = I.su.find(s => s[1].includes(subCode) || (matchedCourse && s[0] === matchedCourse.code)) || I.su[0];
+                            const actualSubCode = subObj ? subObj[0] : subCode;
+                            const rm = slot.lab ? (I.ro.find(r => r[1] == "Laboratory") || I.ro[0])[0] : I.ro[0][0];
+                            for (let sp = 0; sp < span; sp++) {
+                                initialTT.push({ b: bName, s: subCode, sCode: actualSubCode, f: facId, fName: facName, r: rm, d: dIdx, p: pIdx });
+                                pIdx++;
+                            }
+                        });
+                    });
+                });
+            }
+
+            Object.assign(S, {
+                tt: initialTT,
+                unassigned: [],
+                status: "published",
+                versions: [{ v: 1, at: new Date().toLocaleTimeString(), n: initialTT.length, tt: cp(initialTT), st: "published" }],
+                unav: {},
+                user: null,
+                fails: 0,
+                notes: [["Welcome to SmartTimetable. Official schedule active.", "Today"]],
+                audit: [["system", "Loaded " + I.name + " official schedule", "setup", "—"]]
+            });
+
+            ROLE.dean.label = I.top; ROLE.hod.label = I.head; ROLE.faculty.label = I.tch; ROLE.student.label = "Student";
+            S.acct = [
+                { e: "head@" + dm, p: "dean123", name: "Dr. R. Sharma", role: "dean", on: 1 },
+                { e: "hod." + d1.toLowerCase() + "@" + dm, p: "hod123", name: "Prof. K. Menon", role: "hod", dept: d1, on: 1 },
+                { e: "hod." + d2.toLowerCase() + "@" + dm, p: "hod123", name: "Prof. T. Nair", role: "hod", dept: d2, on: 1 },
+                { e: "teacher@" + dm, p: "fac123", name: I.fa[0][1], role: "faculty", fac: I.fa[0][0], on: 1 },
+                { e: "student@" + dm, p: "stu123", name: "Student 01", role: "student", bat: I.ba[0][0], on: 1 }
+            ];
+        }
+        const NM = () => { const I = INST[S.inst]; return { departments: I.unitP, faculty: I.tchP, batches: I.batchP, availability: I.tch + " Availability", ftt: I.tch + " Timetable" } },
+            colL = c => { const I = INST[S.inst]; return c == "Department" ? I.unit : c == "Batch" ? I.batch : c == "Semester" ? I.term : c };
+        const GROUPS = [["Overview", [["dashboard", "Dashboard"]]], ["Master data", [["departments", "Departments"], ["faculty", "Faculty"], ["availability", "Faculty Availability"], ["subjects", "Subjects"], ["batches", "Student Batches"], ["rooms", "Rooms and Labs"], ["calendar", "Calendar and Time Slots"], ["requirements", "Teaching Requirements"]]], ["Scheduling", [["generate", "Generate Timetable"], ["results", "Generation Results"], ["conflicts", "Conflict Explanation"], ["editor", "Timetable Editor"], ["versions", "Versions and Approval"]]], ["Views", [["ftt", "Faculty Timetable"], ["stt", "Student Timetable"], ["rtt", "Room Timetable"]]], ["Administration", [["reports", "Reports and Export"], ["notifications", "Notifications"], ["users", "Users and Roles"], ["audit", "Audit Log and Settings"]]]];
+        const $ = s => document.querySelector(s), log = (a, t) => S.audit.unshift([S.user ? S.user.name + " (" + S.user.role + ")" : "system", a, t, new Date().toLocaleTimeString()]);
+        const tbl = (h, r, x, ix) => `<div class="wrap"><table><tr>${h.map(c => `<th>${c}</th>`).join("")}${x ? "<th></th>" : ""}</tr>${r.map((row, i) => `<tr>${row.map((c, j) => `<td${j == 0 ? ' class="c"' : ""}>${c}</td>`).join("")}${x ? `<td><button class="x" data-del="${ix ? ix[i] : i}">Remove</button></td>` : ""}</tr>`).join("") || `<tr><td colspan="9"><em>No records.</em></td></tr>`}</table></div>`;
+        const head = (t, d) => `<h2>${t}</h2><p class="lead">${d}</p>`;
+        function validate(tt = S.tt) {
+            const m = [], seen = {}; tt.forEach((e, i) => {
+                [["batch", e.b], ["faculty", e.f], ["room", e.r]].forEach(([k, v]) => { const key = k + v + e.d + e.p; if (seen[key] != null) { const o = tt[seen[key]]; m.push(`${k === "batch" ? "Batch" : k === "faculty" ? "Faculty" : "Room"} ${v} is double-booked on ${D[e.d]}, ${P[e.p]} (${o.s} and ${e.s}). Move one session to a free slot.`) } else seen[key] = i });
+                if ((S.unav[e.f] || []).includes(e.d + "-" + e.p)) m.push(`Faculty ${e.f} is unavailable on ${D[e.d]}, ${P[e.p]} (${e.s}, ${e.b}). Reassign the slot or update availability.`);
+                const bt = S.bat.find(x => x[0] == e.b), rm = S.room.find(x => x[0] == e.r), sb = S.sub.find(x => x[0] == e.s || (e.sCode && x[0] == e.sCode) || x[1].includes(e.s));
+                if (bt && rm && +rm[2] < +bt[4]) m.push(`Room ${e.r} seats ${rm[2]} but batch ${e.b} has ${bt[4]} students (${e.s}). Choose a larger room.`);
+                if (sb && rm && sb[4] == "Lab" && rm[1] != "Laboratory") m.push(`${e.s} is a lab subject and needs a laboratory, but ${e.r} is a ${rm[1].toLowerCase()}. Choose a laboratory.`)
+            }); return m
+        }
+        function generate(keep, dept) {
+            const inD = b => !dept || b.split("-")[0] == dept; if (!keep) S.tt.forEach(e => { if (inD(e.b)) delete e.lk }); const tt = S.tt.filter(e => e.lk || !inD(e.b)), un = S.unassigned.filter(u => !inD(u[0].split(" ")[0])), used = new Set();
+            tt.forEach(e => ["b" + e.b, "f" + e.f, "r" + e.r].forEach(x => used.add(x + e.d + e.p)));
+            S.req.forEach(([b, s, f, r, n]) => {
+                if (!inD(b)) return; const bt = S.bat.find(x => x[0] == b), rm = S.room.find(x => x[0] == r), sb = S.sub.find(x => x[0] == s); let why = "";
+                if (!bt || !rm || !sb || !S.fac.some(x => x[0] == f)) why = "a referenced batch, subject, room or faculty does not exist";
+                else if (+rm[2] < +bt[4]) why = `room ${r} seats ${rm[2]} but batch ${b} has ${bt[4]} students (room capacity)`;
+                else if (sb[4] == "Lab" && rm[1] != "Laboratory") why = `${s} is a lab subject but ${r} is a ${rm[1].toLowerCase()} (laboratory requirement)`;
+                for (let k = tt.filter(e => e.b == b && e.s == s).length; k < n; k++) {
+                    const lab = `${b} · ${s} · session ${k + 1}`; if (why) { un.push([lab, why]); continue }
+                    let ok = false, na = 0; for (let off = 0; off < D.length * P.length && !ok; off++) {
+                        const d = (off + k * 2) % D.length, p = Math.floor(off / D.length) % P.length;
+                        if ((S.unav[f] || []).includes(d + "-" + p)) { na++; continue }
+                        if (used.has("b" + b + d + p) || used.has("f" + f + d + p) || used.has("r" + r + d + p) || tt.some(t => t.b == b && t.s == s && t.d == d)) continue;
+                        ["b" + b, "f" + f, "r" + r].forEach(x => used.add(x + d + p)); tt.push({ b, s, f, r, d, p }); ok = true
+                    }
+                    if (!ok) un.push([lab, `no free slot where faculty ${f}, batch ${b} and room ${r} are all free` + (na ? ` (faculty ${f} is unavailable in ${na} slots)` : "")])
+                }
+            });
+            S.tt = tt; S.unassigned = un; S.status = "draft"; S.versions.push({ v: S.versions.length + 1, at: new Date().toLocaleTimeString(), n: tt.length, tt: JSON.parse(JSON.stringify(tt)), st: "draft" }); log(keep ? "Regenerated timetable" : "Generated timetable", "timetable");
+        }
+        function grid(list, show) {
+            const cells = (d, p) => list.filter(e => e.d == d && e.p == p).map(e => `<b>${e.s}</b><i>${show(e)}</i>`).join("<hr>");
+            return `<div class="wrap"><table class="g"><tr><th></th>${D.map(d => `<th>${d}</th>`).join("")}</tr>${P.map((t, p) => `<tr><th>${t}</th>${D.map((_, d) => `<td>${cells(d, p) || "·"}</td>`).join("")}</tr>`).join("")}</table></div>`
+        }
+        const need = () => S.tt.length ? "" : `<p><em>No timetable yet. Open Generate Timetable first.</em></p>`;
+        const pick = (id, opts) => `<select id="${id}">${opts.map(o => `<option>${o}</option>`).join("")}</select>`;
+        const V = {
+            dashboard: () => head("Dashboard", `Signed in as ${S.user.name}, ${ROLE[S.user.role].label}. Overview of resources, timetable status and recent changes.`) + `<div class="cards">${[["Faculty", S.fac.filter(f => vis("fac", f)).length], ["Subjects", S.sub.filter(f => vis("sub", f)).length], ["Batches", S.bat.filter(b => inScope(b[0])).length], ["Rooms", S.room.length], ["Conflicts", validate().length]].map(([a, b]) => `<div class="card"><b>${b}</b><span>${a}</span></div>`).join("")}<div class="card"><b style="font-size:18px;padding:6px 0;text-transform:capitalize">${S.status}</b><span>Timetable status</span></div></div><h3>Recent changes</h3>` + tbl(["Actor", "Action", "Entity", "Time"], S.audit.slice(0, 5)),
+            availability: () => head("Faculty Availability", "Click a slot to toggle availability. Unavailable slots are respected by the scheduler.") + `<div class="row">${pick("af", S.fac.filter(myFac).map(f => f[0]))}<em>Select faculty, then toggle slots.</em></div><div id="av"></div>`,
+            generate: () => head("Generate Timetable", "Select the scope and start an automatic generation job.") + `<div class="row">${pick("term", [INST[S.inst].term + " · 2026–27"])}${pick("sc", ["All " + INST[S.inst].unitP.toLowerCase(), ...S.dept.map(d => d[0])])}</div><div class="cards"><div class="card"><b style="font-size:15px">Automated Rules</b><span>No faculty, batch or room overlap; faculty availability; room capacity at least batch size; lab subjects in laboratories.</span></div><div class="card"><b style="font-size:15px">Preferences</b><span>Balance workload, reduce idle gaps, spread sessions across the week.</span></div></div><button class="p" id="go">Generate timetable</button>`,
+            results: () => head("Generation Results", "Status, assigned sessions and unassigned sessions for the latest job.") + (ttS().length || unS().length ? `<div class="cards"><div class="card"><b>${ttS().length}</b><span>Assigned sessions</span></div><div class="card"><b>${unS().length}</b><span>Unassigned</span></div><div class="card"><b>${Math.round(100 * ttS().length / (ttS().length + unS().length))}%</b><span>Quality score</span></div></div><p>Status: <span class="tag">${S.status}</span></p><div class="row"><button class="p" id="rg">Regenerate</button><em>Sessions you moved manually in the editor are kept in place.</em></div>` + (unS().length ? tbl(["Unassigned session", "Unassigned reason"], unS()) : `<p class="ok">All required sessions were assigned.</p>`) : need()),
+            conflicts: () => { const m = validate(); return head("Conflict Diagnostics", "Affected subject, batch, slot and schedule diagnostics, with suggested actions.") + (S.tt.length ? (m.length ? m.map(x => `<p class="msg bad">${x}</p>`).join("") : `<p class="ok">No conflicts detected.</p>`) + unS().map(u => `<p class="msg">${u[0]} could not be placed: ${u[1]}. <em>Add free slots, a second eligible faculty, a larger room or a laboratory.</em></p>`).join("") : need()) },
+            editor: () => head("Timetable Editor", "Move an entry to a new slot. Changes are validated before saving as a draft.") + (ttS().length ? `<div class="row">${pick("en", S.tt.map((e, i) => [e, i]).filter(([e]) => inScope(e.b)).map(([e, i]) => i + " · " + e.b + " · " + e.s + " (" + D[e.d] + " " + P[e.p] + ")"))}${pick("ed", D)}${pick("ep", P)}${pick("er", S.room.map(r => r[0]))}<button id="mv">Move and validate</button><button class="p" id="sv">Save draft</button></div><div id="em"></div>` + grid(ttS(), e => e.b + " · " + e.f + " · " + e.r) : need()),
+            versions: () => head("Versions and Approval", "Compare versions, approve and publish, or restore an earlier draft.") + (S.versions.length ? `<div class="wrap"><table><tr><th>Version</th><th>Created</th><th>Sessions</th><th>Status</th><th></th></tr>${S.versions.map((v, i) => `<tr><td class="c">v${v.v}</td><td>${v.at}</td><td>${v.n}</td><td><span class="tag">${v.st}</span></td><td><button data-rs="${i}">Restore</button></td></tr>`).join("")}</table></div>${ROLE[S.user.role].publish ? `<button class="p" id="pub">Validate and publish current</button>` : `<button class="p" id="sub">Submit for ${ROLE.dean.label} approval</button> <em>Only the ${ROLE.dean.label} can publish.</em>`}<p id="pm"></p>` : need()),
+            ftt: () => head(NM().ftt, "Personal weekly schedule, rooms and workload.") + `<div class="row">${pick("fv", S.fac.filter(myFac).map(f => f[0] + " · " + f[1]))}</div><div id="vw"></div>`,
+            stt: () => {
+                const cur = S.inst || "engg";
+                const badges = [
+                    { id: "engg", l: "Engineering College (B.Tech)" },
+                    { id: "univ", l: "University (Autonomous)" },
+                    { id: "deg", l: "Degree College (B.Com/B.Sc)" },
+                    { id: "inter", l: "Intermediate College (Junior College)" }
+                ].map(b => `<button type="button" class="inst-badge-btn ${b.id === cur ? 'active' : ''}" data-switch="${b.id}">${b.l}</button>`).join("");
+                return head("Student Timetable", "Official institutional timetable sheet matching university regulations. Switch institution, select a section, toggle views, or print.") +
+                    `<div class="inst-badges">${badges}</div>` +
+                    `<div class="row">${pick("bv", S.bat.filter(myBat).map(b => b[0]))}<button class="p" id="togView">Grid View</button><button id="printSheet" onclick="window.print()">Print / Save PDF</button></div><div id="vw"></div>`;
+            },
+            rtt: () => head("Room Timetable", "Room occupancy and free-slot lookup.") + `<div class="row">${pick("rv", S.room.map(r => r[0]))}</div><div id="vw"></div>`,
+            reports: () => head("Reports and Export", "Print timetables or export them as CSV for class, faculty and room reports.") + `<div class="row"><button class="p" onclick="print()">Print / save as PDF</button><button id="csv">Show CSV</button><button id="cp">Copy CSV</button></div><textarea id="ta" readonly rows="8" style="display:none;width:100%;font:12px monospace;background:var(--w);color:var(--tx);border:1px solid var(--bd);margin-bottom:16px"></textarea><h3>Class timetables</h3>` + S.bat.filter(b => inScope(b[0])).map(b => `<h4>${b[0]}</h4>` + grid(S.tt.filter(e => e.b == b[0]), e => e.f + " · " + e.r)).join("") + `<h3>Workload</h3>` + tbl(["Faculty", "Sessions", "Limit"], S.fac.filter(f => vis("fac", f)).map(f => [f[1], S.tt.filter(e => e.f == f[0]).length, f[3]])),
+            notifications: () => head("Notifications", "Notices for published schedules and changes.") + S.notes.map(n => `<p class="msg">${n[0]} <em>${n[1]}</em></p>`).join(""),
+            users: () => head("Users and Roles", "Accounts, role assignments and what each role is authorised to do.") + `<div class="wrap"><table><tr><th>Email</th><th>Name</th><th>Role</th><th>Scope</th><th>Status</th><th></th></tr>${S.acct.map((a, i) => `<tr><td class="c">${a.e}</td><td>${a.name}</td><td>${ROLE[a.role].label}</td><td>${a.dept || a.bat || a.fac || "All departments"}</td><td>${a.on ? '<span class="ok">Active</span>' : '<span class="er">Disabled</span>'}</td><td>${a.role == "dean" ? "" : `<button data-tg="${i}">${a.on ? "Disable" : "Enable"}</button>`}</td></tr>`).join("")}</table></div><h3>Permissions</h3>` + tbl(["Capability", ROLE.dean.label, ROLE.hod.label, ROLE.faculty.label, ROLE.student.label], [["Manage departments, rooms, calendar", "Yes", "View only", "—", "—"], ["Manage faculty, subjects, batches, requirements", "Yes", "Own department", "—", "—"], ["Generate, edit and regenerate", "Yes", "Own department", "—", "—"], ["Submit for approval", "—", "Yes", "—", "—"], ["Approve and publish", "Yes", "—", "—", "—"], ["View timetables", "All", "Own department", "Own, plus student and room", "Own batch"], ["Reports and export", "Yes", "Own department", "—", "—"], ["Users and audit log", "Yes", "—", "—", "—"]]),
+            audit: () => head("Audit Log and Settings", "Who changed or published a timetable, and when.") + tbl(["Actor", "Action", "Entity", "Time"], S.audit),
+            login: () => head("Sign in", "Email login, password reset and role-based routing.") + `<div style="max-width:340px"><p><input style="width:100%" placeholder="Email"></p><p><input style="width:100%" type="password" placeholder="Password"></p><p><button class="p">Sign in</button> <button>Forgot password</button></p><p class="it">Prototype only. Real sessions are verified by the backend.</p></div>`
+        };
+        function crud(k) { const [t, d, key, cols] = CRUD[k]; return head(NM()[k] || t, d) + `<div class="row"><input id="q" placeholder="Search"></div><div id="tb"></div>` + (can(k) ? `<div class="row">${cols.map(c => `<input class="f" placeholder="${colL(c)}" style="width:130px">`).join("")}<button class="p" id="add">Add</button></div><p id="cm" class="er"></p>` : `<p class="it">View only. Your role cannot edit these records.</p>`) }
+        function drawT(k) {
+            const key = CRUD[k][2], q = ($("#q") || { value: "" }).value.toLowerCase(), L = S[key].map((r, i) => [r, i]).filter(([r]) => vis(key, r) && r.join(" ").toLowerCase().includes(q));
+            $("#tb").innerHTML = tbl(CRUD[k][3].map(colL), L.map(x => x[0]), can(k), L.map(x => x[1]));
+            document.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { S[key].splice(+b.dataset.del, 1); log("Removed record", k); drawT(k) })
+        }
+        function loginView() {
+            return `<div style="display:flex;justify-content:center;align-items:center;min-height:85vh;width:100%"><div style="max-width:440px;width:100%;background:var(--w);padding:32px 28px;border:1px solid var(--bd);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.06)"><h2>SmartTimetable</h2><p class="lead">Intelligent timetable scheduling for universities, colleges and schools. Sign in to continue.</p><p class="it" style="margin:0 0 4px">Institution type</p><select id="ins" style="width:100%">${Object.entries(INST).map(([id, i]) => `<option value="${id}"${id == S.inst ? " selected" : ""}>${i.name}</option>`).join("")}</select>
+<p class="it" style="margin:12px 0 4px">Email</p><input id="em" type="email" style="width:100%" autocomplete="username"><p class="it" style="margin:12px 0 4px">Password</p><input id="pw" type="password" style="width:100%" autocomplete="current-password">
+<p style="margin-top:14px"><button class="p" id="si">Sign in</button> <button id="fp">Forgot password</button></p><p id="le" class="er"></p>
+<h4 style="margin-top:24px">Demo accounts</h4><div class="wrap"><table><tr><th>Role</th><th>Email</th><th>Password</th></tr>${S.acct.map((a, i) => `<tr data-fill="${i}" style="cursor:pointer"><td>${ROLE[a.role].label}${a.dept ? " · " + a.dept : ""}</td><td class="c">${a.e}</td><td class="c">${a.p}</td></tr>`).join("")}</table></div>
+<p class="it" style="margin-top:8px">Verified by the backend API.</p></div></div>`}
+        function bindLogin() {
+            const g = id => document.getElementById(id); S.fails = S.fails || 0;
+            const go = () => {
+                g("le").className = "er"; const e = g("em").value.trim().toLowerCase(), p = g("pw").value; if (S.fails >= 5) { g("le").textContent = "Too many failed attempts. Reload the page to try again."; return }
+                const a = S.acct.find(x => x.e == e && x.p == p); if (!a) { S.fails++; g("le").textContent = "Invalid email or password."; return }
+                if (!a.on) { g("le").textContent = "This account has been disabled. Contact the administrator."; return }
+                S.user = a; S.fails = 0; log("Signed in", "session"); location.hash = ROLE[a.role].home; route()
+            };
+            g("ins").onchange = () => { loadInst(g("ins").value); route() }; g("si").onclick = go;[g("em"), g("pw")].forEach(i => i.onkeydown = e => { if (e.key == "Enter") go() });
+            g("fp").onclick = () => { g("le").className = "it"; g("le").textContent = "If this email has an account, a reset link has been sent. (Demo only.)" };
+            document.querySelectorAll("[data-fill]").forEach(r => r.onclick = () => { const a = S.acct[+r.dataset.fill]; g("em").value = a.e; g("pw").value = a.p })
+        }
+        function route() {
+            const u = S.user, nav = $("#nav");
+            if (!u) { nav.style.display = "none"; $("#main").innerHTML = loginView(); bindLogin(); return }
+            nav.style.display = ""; const R = ROLE[u.role]; let k = location.hash.slice(1) || R.home;
+            nav.innerHTML = `<h1>SmartTimetable</h1><span class="it">${INST[S.inst].name}</span>
+<div style="margin:4px 8px 12px"><select id="navInstSelect" style="width:100%;font-size:12px;padding:4px 6px">${Object.entries(INST).map(([id, i]) => `<option value="${id}"${id == S.inst ? " selected" : ""}>${i.name}</option>`).join("")}</select></div>` + GROUPS.map(([g, l]) => { const ls = l.filter(([id]) => allowed(id)); return ls.length ? `<h6>${g}</h6>` + ls.map(([id, n]) => `<a href="#${id}" class="${id == k ? "on" : ""}">${NM()[id] || n}</a>`).join("") : "" }).join("") + `<div class="nf"><div class="card" style="padding:10px 12px;margin-bottom:8px"><b style="font-size:14px">${u.name}</b><span>${R.label}${u.dept ? " · " + u.dept : ""}</span></div><button id="so" style="width:100%">Sign out</button></div>`;
+            const navSel = document.getElementById("navInstSelect");
+            if (navSel) { navSel.onchange = e => { const target = e.target.value; if (target && INST[target]) { loadInst(target); S.user = S.acct.find(a => a.role === u.role) || S.acct[0]; route(); } }; }
+            $("#so").onclick = () => { log("Signed out", "session"); S.user = null; location.hash = ""; route() };
+            if (!allowed(k)) { $("#main").innerHTML = head("Access denied", `Your role (${R.label}) is not authorised to open this page.`) + `<a href="#${R.home}" style="color:var(--ac)">Return to your home page</a>`; return }
+            $("#main").innerHTML = CRUD[k] ? crud(k) : (V[k] || V.dashboard)(); bind(k); scrollTo(0, 0)
+        }
+        function bind(k) {
+            const g = id => document.getElementById(id);
+            if (CRUD[k]) {
+                const key = CRUD[k][2]; drawT(k); g("q").oninput = () => drawT(k);
+                if (g("add")) g("add").onclick = () => {
+                    const v = [...document.querySelectorAll(".f")].map(i => i.value.trim()); if (!v[0]) return; const d = dp(); let ok = true; if (d) { if (key == "fac" || key == "sub") v[2] = d; else if (key == "bat" || key == "req") ok = v[0].startsWith(d + "-") }
+                    if (!ok) { g("cm").textContent = `You can only add records for the ${d} ${INST[S.inst].unit.toLowerCase()} (batch names start with ${d}-).`; return }
+                    S[key].push(v); log("Added record", k); drawT(k); document.querySelectorAll(".f").forEach(i => i.value = ""); g("cm").textContent = ""
+                }
+            }
+            if (k == "availability") {
+                const draw = () => {
+                    const f = g("af").value, u = S.unav[f] || []; g("av").innerHTML = `<div class="wrap"><table class="g"><tr><th></th>${D.map(d => `<th>${d}</th>`).join("")}</tr>${P.map((t, p) => `<tr><th>${t}</th>${D.map((_, d) => { const off = u.includes(d + "-" + p); return `<td class="slot ${off ? "off" : ""}" data-s="${d}-${p}">${off ? "Unavailable" : "Available"}</td>` }).join("")}</tr>`).join("")}</table></div>`;
+                    document.querySelectorAll(".slot").forEach(c => c.onclick = () => { if (!can("availability")) return; const a = S.unav[f] = S.unav[f] || [], i = a.indexOf(c.dataset.s); i < 0 ? a.push(c.dataset.s) : a.splice(i, 1); log("Updated availability", f); draw() })
+                }; g("af").onchange = draw; draw()
+            }
+            if (k == "generate") g("go").onclick = () => { generate(false, dp()); location.hash = "results" };
+            if (k == "editor" && ttS().length && g("en") && g("en").value) {
+                const ix = () => +g("en").value.split(" ")[0]; g("en").onchange = () => { const e = S.tt[ix()]; g("ed").value = D[e.d]; g("ep").value = P[e.p]; g("er").value = e.r }; g("en").onchange();
+                g("mv").onclick = () => { const t = JSON.parse(JSON.stringify(S.tt)), e = t[ix()]; e.d = D.indexOf(g("ed").value); e.p = P.indexOf(g("ep").value); e.r = g("er").value; e.lk = true; const m = validate(t); if (m.length) g("em").innerHTML = m.map(x => `<p class="msg bad">${x}</p>`).join(""); else { S.tt = t; g("em").innerHTML = `<p class="msg ok">Move is valid. Click Save draft to keep it.</p>`; log("Moved entry", "timetable") } };
+                g("sv").onclick = () => { S.versions.push({ v: S.versions.length + 1, at: new Date().toLocaleTimeString(), n: S.tt.length, tt: JSON.parse(JSON.stringify(S.tt)), st: "draft" }); S.status = "draft"; log("Saved draft", "timetable"); route() }
+            }
+            if (k == "versions" && S.versions.length) {
+                document.querySelectorAll("[data-rs]").forEach(b => b.onclick = () => { const v = S.versions[+b.dataset.rs]; S.tt = JSON.parse(JSON.stringify(v.tt)); S.status = "draft"; log("Restored v" + v.v, "timetable"); route() });
+                if (g("sub")) g("sub").onclick = () => { const m = validate(); if (m.length || S.unassigned.length) { g("pm").innerHTML = `<span class="er">Cannot submit: resolve ${m.length} conflict(s) and ${S.unassigned.length} unassigned session(s) first.</span>`; return } S.status = "submitted"; S.notes.unshift(["Timetable submitted for approval by " + S.user.name + ".", "Just now"]); log("Submitted for approval", "timetable"); g("pm").innerHTML = `<span class="ok">Submitted for approval.</span>` };
+                if (g("pub")) g("pub").onclick = () => { const m = validate(); if (m.length || S.unassigned.length) { g("pm").innerHTML = `<span class="er">Cannot publish: ${m.length} conflict(s), ${S.unassigned.length} unassigned session(s).</span>` } else { S.status = "published"; S.versions[S.versions.length - 1].st = "published"; S.notes.unshift(["A new timetable has been published.", "Just now"]); log("Published timetable", "timetable"); g("pm").innerHTML = `<span class="ok">Published.</span>` } }
+            }
+            if (k == "users") document.querySelectorAll("[data-tg]").forEach(b => b.onclick = () => { const a = S.acct[+b.dataset.tg]; a.on = !a.on; log((a.on ? "Enabled" : "Disabled") + " account " + a.e, "user"); route() });
+            if (k == "results" && g("rg")) g("rg").onclick = () => { generate(true, dp()); route() };
+            if (k == "reports") { const csv = () => "Batch,Subject,Faculty,Room,Day,Time\n" + ttS().map(e => [e.b, e.s, e.f, e.r, D[e.d], P[e.p]].join(",")).join("\n"); g("csv").onclick = () => { g("ta").style.display = "block"; g("ta").value = csv() }; g("cp").onclick = async () => { try { await navigator.clipboard.writeText(csv()); g("cp").textContent = "Copied" } catch (e) { g("csv").click() } } }
+            if (["ftt", "rtt"].includes(k)) { const sel = g(k == "ftt" ? "fv" : "rv"), draw = () => { if (!S.tt.length) { g("vw").innerHTML = need(); return } if (["faculty", "student"].includes(S.user.role) && S.status != "published") { g("vw").innerHTML = `<p><em>The timetable has not been published yet.</em></p>`; return } const v = sel ? sel.value.split(" ")[0] : "", f = k == "ftt" ? "f" : "r"; const l = S.tt.filter(e => e[f] == v || (k == "ftt" && (e.fName == v || (S.fac.find(fc => fc[0] == v) && e.fName == S.fac.find(fc => fc[0] == v)[1])))); g("vw").innerHTML = grid(l, e => k == "ftt" ? e.b + " · " + e.r : (e.b + " · " + (e.fName || e.f))) + `<p class="it">${l.length} session(s) per week.</p>` }; if (sel) { sel.onchange = draw; draw() } }
+            if (k == "stt") {
+                let officialMode = true; const sel = g("bv"), togBtn = g("togView");
+                document.querySelectorAll("[data-switch]").forEach(btn => { btn.onclick = () => { const target = btn.dataset.switch; if (target && INST[target]) { const u = S.user; loadInst(target); if (u) S.user = S.acct.find(a => a.role === u.role) || S.acct[0]; route(); } } });
+                const draw = () => { if (!S.tt.length && !INST[S.inst].officialData) { g("vw").innerHTML = need(); return } if (["faculty", "student"].includes(S.user.role) && S.status != "published" && !INST[S.inst].officialData) { g("vw").innerHTML = `<p><em>The timetable has not been published yet.</em></p>`; return } const bv = sel ? sel.value.split(" ")[0] : (S.bat[0] ? S.bat[0][0] : ""); if (officialMode && INST[S.inst].officialData) { g("vw").innerHTML = renderOfficialSheet(S.inst, bv) } else { const l = S.tt.filter(e => e.b == bv); g("vw").innerHTML = grid(l, e => (e.fName || e.f) + " · " + e.r) + `<p class="it">${l.length} session(s) per week.</p>` } };
+                if (togBtn) togBtn.onclick = () => { officialMode = !officialMode; togBtn.textContent = officialMode ? "Grid View" : "Official View"; togBtn.className = officialMode ? "p" : ""; draw() }; if (sel) sel.onchange = draw; draw()
+            }
+        }
+        loadInst("engg"); addEventListener("hashchange", route); route();
+    </script>
+</body>
+
+</html>
